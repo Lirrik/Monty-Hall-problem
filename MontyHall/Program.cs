@@ -43,9 +43,9 @@ namespace MontyHall
     {
         static void Main(string[] args)
         {
-            int playerWon = 0;
-            int playerLost = 0;
-            Random rnd = new Random();
+            int playerWon = 0;          // number of times player has won
+            int playerLost = 0;         // number of times player has lost
+            Random rnd = new Random();  // single Random object to generate all random numbers as per MSDN
 
             for (int i = 0; i < 1000000; i++)
             {
@@ -53,23 +53,34 @@ namespace MontyHall
                 MontyHallDoors MontyHallGame = new MontyHallDoors();
 
 
-                MontyHallGame[0] = (rnd.Next(2) == 0) ? false : true;
-                if (!MontyHallGame[0])
+                MontyHallGame[0] = (rnd.Next(2) == 0) ? false : true;       // set door #1 randomly
+                if (!MontyHallGame[0])                                      // if the prize is not behind door #1
                 {
-                    MontyHallGame[1] = (rnd.Next(2) == 0) ? false : true;
-                    if (!MontyHallGame[1])
+                    MontyHallGame[1] = (rnd.Next(2) == 0) ? false : true;   // set door #2 randomly 
+                    if (!MontyHallGame[1])                                  // if the prize is not behind door #2
                     {
-                        MontyHallGame[2] = true;
+                        MontyHallGame[2] = true;                            // then it is surely behind door #3
                     }
                 }
 
                 //Console.WriteLine("{0}, {1}, {2}", MontyHallGame[0], MontyHallGame[1], MontyHallGame[2]);
 
 
-                int playerChoice = rnd.Next(3);
+                int playerChoice = rnd.Next(3);                             // player picks a random door
 
+                int montyIntervention = rnd.Next(3);                        // Monty picks his door              
+                while ((montyIntervention == playerChoice) || (MontyHallGame[montyIntervention]))
+                {
+                    montyIntervention = rnd.Next(3);
+                }
+                
+                int newPlayerChoice = rnd.Next(3);                          // player SHOULD change his mind
+                while ((newPlayerChoice == playerChoice) || (newPlayerChoice == montyIntervention))
+                {
+                    newPlayerChoice = rnd.Next(3);
+                }
 
-                if (MontyHallGame[playerChoice])
+                if (MontyHallGame[newPlayerChoice])
                 {
                     playerWon++;
                     //Console.WriteLine("You won!");
