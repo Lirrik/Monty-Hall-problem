@@ -43,21 +43,45 @@ namespace MontyHall
     {
         static void Main(string[] args)
         {
-            MontyHallDoors MontyHallGame = new MontyHallDoors();
-
+            int playerWon = 0;
+            int playerLost = 0;
             Random rnd = new Random();
 
-            MontyHallGame[0] = (rnd.Next(2) == 0) ? false : true;
-            if (!MontyHallGame[0])
+            for (int i = 0; i < 1000000; i++)
             {
-                MontyHallGame[1] = (rnd.Next(2) == 0) ? false : true;
-                if (!MontyHallGame[1])
+
+                MontyHallDoors MontyHallGame = new MontyHallDoors();
+
+
+                MontyHallGame[0] = (rnd.Next(2) == 0) ? false : true;
+                if (!MontyHallGame[0])
                 {
-                    MontyHallGame[2] = true;
+                    MontyHallGame[1] = (rnd.Next(2) == 0) ? false : true;
+                    if (!MontyHallGame[1])
+                    {
+                        MontyHallGame[2] = true;
+                    }
+                }
+
+                //Console.WriteLine("{0}, {1}, {2}", MontyHallGame[0], MontyHallGame[1], MontyHallGame[2]);
+
+
+                int playerChoice = rnd.Next(3);
+
+
+                if (MontyHallGame[playerChoice])
+                {
+                    playerWon++;
+                    //Console.WriteLine("You won!");
+                }
+                else
+                {
+                    playerLost++;
+                    //Console.WriteLine("You lost!");
                 }
             }
 
-            Console.WriteLine("{0}, {1}, {2}", MontyHallGame[0], MontyHallGame[1], MontyHallGame[2]);
+            Console.WriteLine("Times won: {0}\nTimes lost: {1}", playerWon, playerLost);
 
         }
     }
