@@ -41,13 +41,15 @@ namespace MontyHall
 
     class Program
     {
+        const int numberOfGames = 1000000;
+
         static void Main(string[] args)
         {
             int playerWon = 0;          // number of times player has won
             int playerLost = 0;         // number of times player has lost
             Random rnd = new Random();  // single Random object to generate all random numbers as per MSDN
 
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < numberOfGames; i++)
             {
 
                 MontyHallDoors MontyHallGame = new MontyHallDoors();
