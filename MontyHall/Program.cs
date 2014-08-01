@@ -26,7 +26,7 @@ namespace MontyHall
 
             if (swap)
             {
-                // If the player decided to swap doors, he has only one door left
+                // If the player decided to switch doors, he has only one door left
                 // The only element in a list is at index 0
                 playerPrize = doors[0];
             }
@@ -57,7 +57,7 @@ namespace MontyHall
                 }
             }
 
-            Console.WriteLine("Results for {0}swapping doors:", swap ? "" : "not ");
+            Console.WriteLine("Results for {0}switching doors:", swap ? "" : "not ");
             Console.WriteLine("Times won: {0}, times lost: {1}\n", playerWon, playerLost);
         }
 
@@ -68,10 +68,10 @@ namespace MontyHall
 
             Program p = new Program();
 
-            // Run simulations with swapping
+            // Run simulations with switching
             p.RunSimulation(numberOfGames, true);
 
-            // Run simulations without swapping
+            // Run simulations without switching
             p.RunSimulation(numberOfGames, false);
         }
     }
