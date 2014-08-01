@@ -1,101 +1,78 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MontyHall
 {
-    class MontyHallDoors
+    class MontyHallGame
     {
-        private bool Door1;
-        private bool Door2;
-        private bool Door3;
+        private enum Prize {Car, Donkey};
 
-        public bool this[int index]
+        private Random rnd = new Random();
+
+        public bool Play(bool swap)
         {
-            set
-            {
-                switch (index)
-                {
-                    case 0: Door1 = value;
-                        break;
-                    case 1: Door2 = value;
-                        break;
-                    case 2: Door3 = value;
-                        break;
+            // TODO: It would be better to fill doors at random
+            // TODO: Choose number of doors?
+            List<Prize> doors = new List<Prize> {Prize.Car, Prize.Donkey, Prize.Donkey};
 
-                    default: throw new ArgumentOutOfRangeException("index");
-                }
+            // Player picks a random door
+            int playerChoice = rnd.Next(doors.Count);
+            Prize playerPrize = doors[playerChoice];
+            doors.RemoveAt(playerChoice);
+
+            // Monty opens a door with a donkey
+            // TODO: if there are two donkeys left, Monty's choice MUST be random?
+            doors.Remove(Prize.Donkey);
+
+            if (swap)
+            {
+                // If the player decided to swap doors, he has only one door left
+                // The only element in a list is at index 0
+                playerPrize = doors[0];
             }
 
-            get
-            {
-                switch (index)
-                {
-                    case 0: return Door1;
-                    case 1: return Door2;
-                    case 2: return Door3;
-
-                    default: throw new ArgumentOutOfRangeException("index");
-                }       
-            }
+            // Let's see if the player won
+            return (playerPrize == Prize.Car);
         }
     }
 
     class Program
     {
-        const int numberOfGames = 1000000;
-
-        static void Main(string[] args)
+        private void RunSimulation(int numberOfTimes, bool swap)
         {
             int playerWon = 0;          // number of times player has won
             int playerLost = 0;         // number of times player has lost
-            Random rnd = new Random();  // single Random object to generate all random numbers as per MSDN
 
-            for (int i = 0; i < numberOfGames; i++)
+            MontyHallGame game = new MontyHallGame();
+
+            for(int i = 0; i < numberOfTimes; i++)
             {
-
-                MontyHallDoors MontyHallGame = new MontyHallDoors();
-
-
-                MontyHallGame[0] = (rnd.Next(2) == 0) ? false : true;       // set door #1 randomly
-                if (!MontyHallGame[0])                                      // if the prize is not behind door #1
-                {
-                    MontyHallGame[1] = (rnd.Next(2) == 0) ? false : true;   // set door #2 randomly 
-                    if (!MontyHallGame[1])                                  // if the prize is not behind door #2
-                    {
-                        MontyHallGame[2] = true;                            // then it is surely behind door #3
-                    }
-                }
-
-                //Console.WriteLine("{0}, {1}, {2}", MontyHallGame[0], MontyHallGame[1], MontyHallGame[2]);
-
-
-                int playerChoice = rnd.Next(3);                             // player picks a random door
-
-                int montyIntervention = rnd.Next(3);                        // Monty picks his door              
-                while ((montyIntervention == playerChoice) || (MontyHallGame[montyIntervention]))
-                {
-                    montyIntervention = rnd.Next(3);
-                }
-                
-                int newPlayerChoice = rnd.Next(3);                          // player SHOULD change his mind
-                while ((newPlayerChoice == playerChoice) || (newPlayerChoice == montyIntervention))
-                {
-                    newPlayerChoice = rnd.Next(3);
-                }
-
-                if (MontyHallGame[newPlayerChoice])
+                if (game.Play(swap))
                 {
                     playerWon++;
-                    //Console.WriteLine("You won!");
                 }
                 else
                 {
                     playerLost++;
-                    //Console.WriteLine("You lost!");
                 }
             }
 
-            Console.WriteLine("Times won: {0}\nTimes lost: {1}", playerWon, playerLost);
+            Console.WriteLine("Results for {0}swapping doors:", swap ? "" : "not ");
+            Console.WriteLine("Times won: {0}, times lost: {1}\n", playerWon, playerLost);
+        }
 
+        static void Main(string[] args)
+        {
+            // Number of simulations
+            const int numberOfGames = 1000000;
+
+            Program p = new Program();
+
+            // Run simulations with swapping
+            p.RunSimulation(numberOfGames, true);
+
+            // Run simulations without swapping
+            p.RunSimulation(numberOfGames, false);
         }
     }
 }
